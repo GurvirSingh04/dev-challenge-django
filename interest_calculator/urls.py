@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import interest_data
+from . import views
 
 
 urlpatterns = [
-    path('interest-data/', interest_data, name="interest_data"),
+    path('api/projections/', views.SavingsProjectionView.as_view(), name='savings_projections'),
 ]

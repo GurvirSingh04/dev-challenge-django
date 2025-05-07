@@ -1,38 +1,32 @@
-import React from 'react'
-import './App.css'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import { Container } from '@chakra-ui/react'
-import DefaultLayout from './components/layouts/Default'
-import LineChart from './components/LineChart'
-import theme from './theme'
+import React, { Suspense } from 'react';
+import { ChakraProvider, extendTheme, Spinner, Center, Container } from '@chakra-ui/react';
+import DefaultLayout from './components/layouts/Default';
+import theme from './theme';
 
-const defaultTheme = extendTheme(theme)
+/**
+ * Lazily loaded SavingsCalculator component to improve initial load time
+ */
+const SavingsCalculator = React.lazy(() => import('./components/SavingsCalculator'));
 
-// Note: This is just for example purposes
-// should be replaced with real data from the backend
-const tempData = {
-    xAxis: ['0', '1', '2', '3', '4', '5'],
-    yAxis: ['100', '150', '180', '210', '240', '350'],
-}
+const defaultTheme = extendTheme(theme);
 
+/**
+ * Root component for the application
+ * Sets up theming, layout, and code-splitting with Suspense
+ * @returns The rendered application
+ */
 function App() {
     return (
         <ChakraProvider theme={defaultTheme}>
-            {/* We've just bundled everything into one file here to 
-            get you started!*/}
             <DefaultLayout>
-                <Container pt={6}>
-                    <LineChart
-                        title="Savings Over time"
-                        xAxisData={tempData.xAxis}
-                        yAxisData={tempData.yAxis}
-                        xLabel="Years"
-                        yLabel="Amount"
-                    />
-                </Container>
+                <Suspense fallback={<Center h="500px"><Spinner size="xl" /></Center>}>
+                    <Container pt={6} maxW="1400px">
+                        <SavingsCalculator />
+                    </Container>
+                </Suspense>
             </DefaultLayout>
         </ChakraProvider>
-    )
+    );
 }
 
-export default App
+export default App;
